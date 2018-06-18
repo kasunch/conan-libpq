@@ -47,7 +47,7 @@ class LibpqConan(ConanFile):
 
     def configure_autotools(self):
         if not self.autotools:
-            self.autotools = AutoToolsBuildEnvironment(self)
+            self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
             self.build_subfolder = os.path.join(self.build_folder, "output")
             args = ['--without-readline']
             if not self.options.with_zlib:
