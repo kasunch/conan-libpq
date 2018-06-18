@@ -60,26 +60,34 @@ class LibpqConan(ConanFile):
 
     def build(self):
         autotools = self.configure_autotools()
+        with tools.chdir(os.path.join(self.source_subfolder, "src", "common")):
+            autotools.make()
         with tools.chdir(os.path.join(self.source_subfolder, "src", "interfaces", "libpq")):
             autotools.make()
 
     def package(self):
         self.copy(pattern="COPYRIGHT", dst="licenses", src=self.source_subfolder)
         autotools = self.configure_autotools()
+        with tools.chdir(os.path.join(self.source_subfolder, "src", "common")):
+            autotools.install()
         with tools.chdir(os.path.join(self.source_subfolder, "src", "interfaces", "libpq")):
             autotools.install()
         self.copy(pattern="*.h", dst="include", src=os.path.join(self.build_subfolder, "include"))
         self.copy(pattern="postgres_ext.h", dst="include", src=os.path.join(self.source_subfolder, "src", "include"))
         self.copy(pattern="pg_config_ext.h", dst="include", src=os.path.join(self.source_subfolder, "src", "include"))
+        lib_dst = "lib"
         if self.settings.os == "Linux":
             pattern = "*.so*" if self.options.shared else "*.a"
         elif self.settings.os == "Macos":
             pattern = "*.dylib" if self.options.shared else "*.a"
         elif self.settings.os == "Windows":
             pattern = "*.dll" if self.options.shared else "*.lib"
-        self.copy(pattern=pattern, dst="lib", src=os.path.join(self.build_subfolder, "lib"))
+            lib_dst = "bin" if self.options.shared else "lib"
+        self.copy(pattern=pattern, dst=lib_dst, src=os.path.join(self.build_subfolder, "lib"))
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
         if self.settings.os == "Linux":
             self.cpp_info.libs.append("pthread")
+        elif self.settings.os == "Windows":
+            self.cpp_info.libs.append("ws2_32")
