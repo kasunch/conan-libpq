@@ -14,7 +14,6 @@ class LibpqConan(ConanFile):
     license = "PostgreSQL"
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt"]
-    generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
