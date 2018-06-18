@@ -13,7 +13,6 @@ class LibpqConan(ConanFile):
     homepage = "https://www.postgresql.org/docs/current/static/libpq.html"
     license = "PostgreSQL"
     exports = ["LICENSE.md"]
-    exports_sources = ["CMakeLists.txt"]
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
