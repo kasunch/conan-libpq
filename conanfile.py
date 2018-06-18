@@ -29,6 +29,8 @@ class LibpqConan(ConanFile):
             del self.options.fPIC
 
     def configure(self):
+        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
+            raise Exception("Visual Studio is not supported yet.")
         del self.settings.compiler.libcxx
 
     def requirements(self):
