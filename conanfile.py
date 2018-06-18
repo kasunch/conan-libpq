@@ -50,10 +50,8 @@ class LibpqConan(ConanFile):
             self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
             self.build_subfolder = os.path.join(self.build_folder, "output")
             args = ['--without-readline']
-            if not self.options.with_zlib:
-                args.append('--without-zlib')
-            if not self.options.with_openssl:
-                args.append('--without-openssl')
+            args.append('--with-zlib' if self.options.with_zlib else '--without-zlib')
+            args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')
             build_subfolder = tools.unix_path(self.build_subfolder) if self.settings.os == "Windows" else self.build_subfolder
             args.append('--prefix={}'.format(build_subfolder))
             with tools.chdir(self.source_subfolder):
