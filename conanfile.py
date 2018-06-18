@@ -54,7 +54,8 @@ class LibpqConan(ConanFile):
                 args.append('--without-zlib')
             if not self.options.with_openssl:
                 args.append('--without-openssl')
-            args.append('--prefix="{}"'.format(self.build_subfolder))
+            build_subfolder = tools.unix_path(self.build_subfolder) if self.settings.os == "Windows" else self.build_subfolder
+            args.append('--prefix={}'.format(build_subfolder))
             with tools.chdir(self.source_subfolder):
                 self.autotools.configure(args=args)
         return self.autotools
