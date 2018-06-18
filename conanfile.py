@@ -75,15 +75,15 @@ class LibpqConan(ConanFile):
         self.copy(pattern="*.h", dst="include", src=os.path.join(self.build_subfolder, "include"))
         self.copy(pattern="postgres_ext.h", dst="include", src=os.path.join(self.source_subfolder, "src", "include"))
         self.copy(pattern="pg_config_ext.h", dst="include", src=os.path.join(self.source_subfolder, "src", "include"))
-        lib_dst = "lib"
         if self.settings.os == "Linux":
             pattern = "*.so*" if self.options.shared else "*.a"
         elif self.settings.os == "Macos":
             pattern = "*.dylib" if self.options.shared else "*.a"
         elif self.settings.os == "Windows":
-            pattern = "*.dll" if self.options.shared else "*.lib"
-            lib_dst = "bin" if self.options.shared else "lib"
-        self.copy(pattern=pattern, dst=lib_dst, src=os.path.join(self.build_subfolder, "lib"))
+            pattern = "*.a"
+            if self.options.shared:
+                self.copy(pattern="*.dll", dst="bin", src=os.path.join(self.build_subfolder, "bin"))
+        self.copy(pattern=pattern, dst="lib", src=os.path.join(self.build_subfolder, "lib"))
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
