@@ -27,6 +27,7 @@ class LibpqConan(ConanFile):
     def config_options(self):
         if self.settings.os == 'Windows':
             del self.options.fPIC
+            del self.options.shared
 
     def configure(self):
         if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
@@ -81,8 +82,7 @@ class LibpqConan(ConanFile):
             pattern = "*.dylib" if self.options.shared else "*.a"
         elif self.settings.os == "Windows":
             pattern = "*.a"
-            if self.options.shared:
-                self.copy(pattern="*.dll", dst="bin", src=os.path.join(self.build_subfolder, "bin"))
+            self.copy(pattern="*.dll", dst="bin", src=os.path.join(self.build_subfolder, "bin"))
         self.copy(pattern=pattern, dst="lib", src=os.path.join(self.build_subfolder, "lib"))
 
     def package_info(self):
