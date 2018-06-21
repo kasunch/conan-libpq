@@ -7,7 +7,7 @@ import os
 
 class LibpqConan(ConanFile):
     name = "libpq"
-    version = "10.4"
+    version = "9.6.9"
     description = "The library used by all the standard PostgreSQL tools."
     url = "https://github.com/bincrafters/conan-libpq"
     homepage = "https://www.postgresql.org/docs/current/static/libpq.html"
