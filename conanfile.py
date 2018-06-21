@@ -30,8 +30,6 @@ class LibpqConan(ConanFile):
             del self.options.shared
 
     def configure(self):
-        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
-            raise Exception("Visual Studio is not supported yet.")
         del self.settings.compiler.libcxx
 
     def requirements(self):
@@ -60,11 +58,16 @@ class LibpqConan(ConanFile):
         return self.autotools
 
     def build(self):
-        autotools = self.configure_autotools()
-        with tools.chdir(os.path.join(self.source_subfolder, "src", "common")):
-            autotools.make()
-        with tools.chdir(os.path.join(self.source_subfolder, "src", "interfaces", "libpq")):
-            autotools.make()
+        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
+            target_arch = "CPU=AMD64" if self.settings.arch == "x86_64" else ""
+            mak_file = os.path.join(self.source_subfolder, "src", "win32.mak")
+            self.run("nmake /f {} {}".format(mak_file, target_arch))
+        else:
+            autotools = self.configure_autotools()
+            with tools.chdir(os.path.join(self.source_subfolder, "src", "common")):
+                autotools.make()
+            with tools.chdir(os.path.join(self.source_subfolder, "src", "interfaces", "libpq")):
+                autotools.make()
 
     def package(self):
         self.copy(pattern="COPYRIGHT", dst="licenses", src=self.source_subfolder)
