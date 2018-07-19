@@ -74,6 +74,8 @@ class LibpqConan(ConanFile):
             autotools.make()
 
     def build_cmake(self):
+        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio" and float(self.settings.compiler.version.value) == 12:
+            tools.replace_in_file(os.path.join(self.source_subfolder, "src", "port", "win32error.c"), "_dosmaperr(unsigned long e)", "_dosmaperr_ext(unsigned long e)")
         cmake = self.configure_cmake()
         cmake.build()
 
