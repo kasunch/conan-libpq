@@ -6,6 +6,8 @@ set(CMAKE_VERBOSE_MAKEFILE TRUE)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+find_package(PostgreSQL REQUIRED)
+
 file(GLOB SOURCE_FILES test_package.c)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
