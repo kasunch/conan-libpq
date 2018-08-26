@@ -13,7 +13,7 @@ class LibpqConan(ConanFile):
     url = "https://github.com/bincrafters/conan-libpq"
     homepage = "https://www.postgresql.org/docs/current/static/libpq.html"
     license = "PostgreSQL"
-    exports = ["LICENSE.md"]
+    exports = ["LICENSE.md", "FindPostgreSQL.cmake"]
     exports_sources = ["OriginalCMakeLists.txt", "CMakeLists.txt"]
     settings = "os", "arch", "compiler", "build_type"
     options = {
@@ -87,6 +87,7 @@ class LibpqConan(ConanFile):
 
     def package(self):
         self.copy(pattern="COPYRIGHT", dst="licenses", src=self.source_subfolder)
+        self.copy("FindPostgreSQL.cmake")
         if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
             cmake = self.configure_cmake()
             cmake.install()
