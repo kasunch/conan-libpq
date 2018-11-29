@@ -77,6 +77,8 @@ class LibpqConan(ConanFile):
             _autotools.make()
         with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
             _autotools.make()
+         with tools.chdir(os.path.join(self.source_subfolder, "src", "backend")):
+            _autotools.make(target="generated-headers")
 
     def _build_cmake(self):
         if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio" and float(self.settings.compiler.version.value) == 12:
@@ -101,6 +103,8 @@ class LibpqConan(ConanFile):
             with tools.chdir(os.path.join(self._source_subfolder, "src", "common")):
                 _autotools.install()
             with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
+                _autotools.install()
+            with tools.chdir(os.path.join(self.source_subfolder, "src", "include")):
                 _autotools.install()
             self.copy(pattern="*.h", dst="include", src=os.path.join(self._build_subfolder, "include"))
             self.copy(pattern="postgres_ext.h", dst="include", src=os.path.join(self._source_subfolder, "src", "include"))
