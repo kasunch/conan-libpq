@@ -1,9 +1,11 @@
 find_path(PostgreSQL_INCLUDE_DIR NAMES postgres_ext.h PATHS ${CONAN_INCLUDE_DIRS_LIBPQ} NO_CMAKE_FIND_ROOT_PATH)
-find_library(PostgreSQL_LIBRARY NAMES pq PATHS ${CONAN_LIB_DIRS_LIBPQ} NO_CMAKE_FIND_ROOT_PATH)
+find_library(PostgreSQL_LIBRARY NAMES pq libpq PATHS ${CONAN_LIB_DIRS_LIBPQ} NO_CMAKE_FIND_ROOT_PATH)
 
 foreach(library ${CONAN_LIBS_LIBPQ})
     find_library(found_library_${library} NAMES ${library} PATHS ${CONAN_LIB_DIRS_LIBPQ} NO_CMAKE_FIND_ROOT_PATH)
-    list(APPEND PostgreSQL_LIBRARIES ${found_library_${library}})
+    if (found_library_${library})
+        list(APPEND PostgreSQL_LIBRARIES ${found_library_${library}})
+    endif()
 endforeach()
 
 MESSAGE("** PostgreSQL ALREADY FOUND BY CONAN!")
