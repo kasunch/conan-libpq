@@ -48,7 +48,8 @@ class LibpqConan(ConanFile):
 
     def source(self):
         source_url = "https://ftp.postgresql.org/pub/source"
-        tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version))
+        sha256 = "69ec0f7414748b268b98f49653861c53125f0e2acddf931676902073e21975f5"
+        tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version), sha256=sha256)
         extracted_dir = "postgresql-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
         shutil.copyfile("OriginalCMakeLists.txt", os.path.join(self._source_subfolder, "CMakeLists.txt"))
