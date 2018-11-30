@@ -129,14 +129,21 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_DEBUG_POSTFIX "d")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_library(libpq ${pg_port_src} ${pg_backend_src} ${pg_libpq_src})
-target_compile_definitions(libpq PRIVATE -DFRONTEND -DENABLE_THREAD_SAFETY -DUSE_OPENSSL -D_CRT_SECURE_NO_WARNINGS)
-target_link_libraries(libpq PUBLIC CONAN_PKG::OpenSSL)
+
+
+list(APPEND LIBPQ_COMPILER_DEFINITIONS FRONTEND USE_OPENSSL ENABLE_THREAD_SAFETY)
+list(APPEND LIBPQ_LINK_LIBRARIES CONAN_PKG::OpenSSL)
+
 if(WIN32)
-    target_link_libraries(libpq PUBLIC CONAN_PKG::OpenSSL ws2_32 secur32 advapi32 shell32)
+    list(APPEND LIBPQ_COMPILER_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
+    list(APPEND LIBPQ_LINK_LIBRARIES ws2_32 secur32 advapi32 shell32)
+    target_include_directories(libpq PRIVATE src/include src/port ${CMAKE_CURRENT_BINARY_DIR}/include)
+    set_target_properties(libpq PROPERTIES ENABLE_EXPORTS ON)
+    set_target_properties(libpq PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
-target_include_directories(libpq PRIVATE src/include src/port ${CMAKE_CURRENT_BINARY_DIR}/include)
-set_target_properties(libpq PROPERTIES ENABLE_EXPORTS ON)
-set_target_properties(libpq PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+target_compile_definitions(libpq PRIVATE ${LIBPQ_COMPILER_DEFINITIONS})
+target_link_libraries(libpq PUBLIC ${LIBPQ_LINK_LIBRARIES})
 
 install(TARGETS libpq
     ARCHIVE DESTINATION lib
