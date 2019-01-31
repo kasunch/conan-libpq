@@ -23,7 +23,7 @@ class LibpqConan(ConanFile):
     default_options = {'shared': False, 'fPIC': True, 'with_zlib': False, 'with_openssl': False}
     _source_subfolder = "source_subfolder"
     _build_subfolder = None
-    autotools = None
+    _autotools = None
 
     def config_options(self):
         if self.settings.os == 'Windows':
@@ -47,21 +47,19 @@ class LibpqConan(ConanFile):
         extracted_dir = "postgresql-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
-    def configure_autotools(self):
-        if not self.autotools:
-            self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
+    def _configure_autotools(self):
+        if not self._autotools:
+            self._autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
             self._build_subfolder = os.path.join(self.build_folder, "output")
             args = ['--without-readline']
             args.append('--with-zlib' if self.options.with_zlib else '--without-zlib')
-            args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')
-            _build_subfolder = tools.unix_path(self._build_subfolder) if self.settings.os == "Windows" else self._build_subfolder
-            args.append('--prefix={}'.format(_build_subfolder))
-            with tools.chdir(self._source_subfolder):
-                self.autotools.configure(args=args)
-        return self.autotools
+            args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')            
+            with tools.chdir(self._source_subfolder, win_bash=tools.os_info.is_windows):
+                self._autotools.configure(args=args)
+        return self._autotools
 
     def build(self):
-        autotools = self.configure_autotools()
+        autotools = self._configure_autotools()
         with tools.chdir(os.path.join(self._source_subfolder, "src", "common")):
             autotools.make()
         with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
@@ -69,7 +67,7 @@ class LibpqConan(ConanFile):
 
     def package(self):
         self.copy(pattern="COPYRIGHT", dst="licenses", src=self._source_subfolder)
-        autotools = self.configure_autotools()
+        autotools = self._configure_autotools()
         with tools.chdir(os.path.join(self._source_subfolder, "src", "common")):
             autotools.install()
         with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
