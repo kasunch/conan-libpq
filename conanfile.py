@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
+from conans.errors import ConanInvalidConfiguration
 import os
 
 
@@ -19,9 +20,9 @@ class LibpqConan(ConanFile):
         "fPIC": [True, False],
         "with_zlib": [True, False],
         "with_openssl": [True, False]}
-    default_options = "shared=False", "fPIC=True", "with_zlib=False", "with_openssl=False"
-    source_subfolder = "source_subfolder"
-    build_subfolder = None
+    default_options = {'shared': False, 'fPIC': True, 'with_zlib': False, 'with_openssl': False}
+    _source_subfolder = "source_subfolder"
+    _build_subfolder = None
     autotools = None
 
     def config_options(self):
@@ -31,7 +32,7 @@ class LibpqConan(ConanFile):
 
     def configure(self):
         if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
-            raise Exception("Visual Studio is not supported yet.")
+            raise ConanInvalidConfiguration("Visual Studio is not supported yet.")
         del self.settings.compiler.libcxx
 
     def requirements(self):
@@ -44,46 +45,46 @@ class LibpqConan(ConanFile):
         source_url = "https://ftp.postgresql.org/pub/source"
         tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version))
         extracted_dir = "postgresql-" + self.version
-        os.rename(extracted_dir, self.source_subfolder)
+        os.rename(extracted_dir, self._source_subfolder)
 
     def configure_autotools(self):
         if not self.autotools:
             self.autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
-            self.build_subfolder = os.path.join(self.build_folder, "output")
+            self._build_subfolder = os.path.join(self.build_folder, "output")
             args = ['--without-readline']
             args.append('--with-zlib' if self.options.with_zlib else '--without-zlib')
             args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')
-            build_subfolder = tools.unix_path(self.build_subfolder) if self.settings.os == "Windows" else self.build_subfolder
-            args.append('--prefix={}'.format(build_subfolder))
-            with tools.chdir(self.source_subfolder):
+            _build_subfolder = tools.unix_path(self._build_subfolder) if self.settings.os == "Windows" else self._build_subfolder
+            args.append('--prefix={}'.format(_build_subfolder))
+            with tools.chdir(self._source_subfolder):
                 self.autotools.configure(args=args)
         return self.autotools
 
     def build(self):
         autotools = self.configure_autotools()
-        with tools.chdir(os.path.join(self.source_subfolder, "src", "common")):
+        with tools.chdir(os.path.join(self._source_subfolder, "src", "common")):
             autotools.make()
-        with tools.chdir(os.path.join(self.source_subfolder, "src", "interfaces", "libpq")):
+        with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
             autotools.make()
 
     def package(self):
-        self.copy(pattern="COPYRIGHT", dst="licenses", src=self.source_subfolder)
+        self.copy(pattern="COPYRIGHT", dst="licenses", src=self._source_subfolder)
         autotools = self.configure_autotools()
-        with tools.chdir(os.path.join(self.source_subfolder, "src", "common")):
+        with tools.chdir(os.path.join(self._source_subfolder, "src", "common")):
             autotools.install()
-        with tools.chdir(os.path.join(self.source_subfolder, "src", "interfaces", "libpq")):
+        with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
             autotools.install()
-        self.copy(pattern="*.h", dst="include", src=os.path.join(self.build_subfolder, "include"))
-        self.copy(pattern="postgres_ext.h", dst="include", src=os.path.join(self.source_subfolder, "src", "include"))
-        self.copy(pattern="pg_config_ext.h", dst="include", src=os.path.join(self.source_subfolder, "src", "include"))
+        self.copy(pattern="*.h", dst="include", src=os.path.join(self._build_subfolder, "include"))
+        self.copy(pattern="postgres_ext.h", dst="include", src=os.path.join(self._source_subfolder, "src", "include"))
+        self.copy(pattern="pg_config_ext.h", dst="include", src=os.path.join(self._source_subfolder, "src", "include"))
         if self.settings.os == "Linux":
             pattern = "*.so*" if self.options.shared else "*.a"
         elif self.settings.os == "Macos":
             pattern = "*.dylib" if self.options.shared else "*.a"
         elif self.settings.os == "Windows":
             pattern = "*.a"
-            self.copy(pattern="*.dll", dst="bin", src=os.path.join(self.build_subfolder, "bin"))
-        self.copy(pattern=pattern, dst="lib", src=os.path.join(self.build_subfolder, "lib"))
+            self.copy(pattern="*.dll", dst="bin", src=os.path.join(self._build_subfolder, "bin"))
+        self.copy(pattern=pattern, dst="lib", src=os.path.join(self._build_subfolder, "lib"))
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
