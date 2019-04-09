@@ -10,8 +10,10 @@ class LibpqConan(ConanFile):
     name = "libpq"
     version = "10.4"
     description = "The library used by all the standard PostgreSQL tools."
+    topics = ("conan", "libpq", "postgresql", "database", "db")
     url = "https://github.com/bincrafters/conan-libpq"
     homepage = "https://www.postgresql.org/docs/current/static/libpq.html"
+    author = "Bincrafters <bincrafters@gmail.com>"
     license = "PostgreSQL"
     exports = ["LICENSE.md"]
     settings = "os", "arch", "compiler", "build_type"
@@ -43,7 +45,8 @@ class LibpqConan(ConanFile):
 
     def source(self):
         source_url = "https://ftp.postgresql.org/pub/source"
-        tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version))
+        sha256 = "60192bc75cd73e688500e8350ea065cca032e21abe57e72d4f556e0bf84fcf17"
+        tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version), sha256=sha256)
         extracted_dir = "postgresql-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
@@ -53,7 +56,7 @@ class LibpqConan(ConanFile):
             self._build_subfolder = os.path.join(self.build_folder, "output")
             args = ['--without-readline']
             args.append('--with-zlib' if self.options.with_zlib else '--without-zlib')
-            args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')            
+            args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')
             with tools.chdir(self._source_subfolder):
                 self._autotools.configure(args=args)
         return self._autotools
