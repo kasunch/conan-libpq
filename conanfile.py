@@ -41,7 +41,7 @@ class LibpqConan(ConanFile):
         if self.options.with_zlib:
             self.requires.add("zlib/1.2.11@conan/stable")
         if self.options.with_openssl:
-            self.requires.add("OpenSSL/1.0.2o@conan/stable")
+            self.requires.add("OpenSSL/1.0.2r@conan/stable")
 
     def source(self):
         source_url = "https://ftp.postgresql.org/pub/source"
