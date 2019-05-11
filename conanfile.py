@@ -8,7 +8,7 @@ import os
 
 class LibpqConan(ConanFile):
     name = "libpq"
-    version = "10.4"
+    version = "11.3"
     description = "The library used by all the standard PostgreSQL tools."
     topics = ("conan", "libpq", "postgresql", "database", "db")
     url = "https://github.com/bincrafters/conan-libpq"
@@ -45,7 +45,7 @@ class LibpqConan(ConanFile):
 
     def source(self):
         source_url = "https://ftp.postgresql.org/pub/source"
-        sha256 = "60192bc75cd73e688500e8350ea065cca032e21abe57e72d4f556e0bf84fcf17"
+        sha256 = "2a9ff3659e327a4369929478200046942710fd6bc25fe56c72d6b01ee8b1974a"
         tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version), sha256=sha256)
         extracted_dir = "postgresql-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
@@ -76,6 +76,8 @@ class LibpqConan(ConanFile):
         with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
             autotools.install()
         self.copy(pattern="*.h", dst="include", src=os.path.join(self._build_subfolder, "include"))
+        self.copy(pattern="*.h", dst=os.path.join("include", "catalog"), src=os.path.join(self._source_subfolder, "src", "include", "catalog"))
+        self.copy(pattern="*.h", dst=os.path.join("include", "catalog"), src=os.path.join(self._source_subfolder, "src", "backend", "catalog"))
         self.copy(pattern="postgres_ext.h", dst="include", src=os.path.join(self._source_subfolder, "src", "include"))
         self.copy(pattern="pg_config_ext.h", dst="include", src=os.path.join(self._source_subfolder, "src", "include"))
         if self.settings.os == "Linux":
@@ -88,6 +90,7 @@ class LibpqConan(ConanFile):
         self.copy(pattern=pattern, dst="lib", src=os.path.join(self._build_subfolder, "lib"))
 
     def package_info(self):
+        self.env_info.PostgreSQL_ROOT = self.package_folder
         self.cpp_info.libs = tools.collect_libs(self)
         if self.settings.os == "Linux":
             self.cpp_info.libs.append("pthread")
