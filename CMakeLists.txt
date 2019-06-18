@@ -92,11 +92,16 @@ set(pg_port_src
     source_subfolder/src/port/tar.c
     source_subfolder/src/port/thread.c
     source_subfolder/src/port/unsetenv.c
-    source_subfolder/src/port/win32env.c    
-    source_subfolder/src/port/win32error.c
+    source_subfolder/src/port/win32env.c
     source_subfolder/src/port/win32security.c
     source_subfolder/src/port/win32setlocale.c
 )
+
+if (${MSVC_VERSION} GREATER 1800)
+    list(APPEND pg_port_src
+         source_subfolder/src/port/win32error.c)
+endif()
+
 include_directories(source_subfolder/src/include/port/win32 source_subfolder/src/include/port/win32_msvc)
 
 set(pg_backend_src
