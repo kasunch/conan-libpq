@@ -51,6 +51,7 @@ set(pg_port_src
     source_subfolder/src/port/chklocale.c
     source_subfolder/src/port/crypt.c
     source_subfolder/src/port/dirent.c
+    source_subfolder/src/port/dirmod.c
     source_subfolder/src/port/erand48.c
     source_subfolder/src/port/fls.c
     source_subfolder/src/port/fseeko.c
