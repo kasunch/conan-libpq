@@ -23,9 +23,16 @@ class LibpqConan(ConanFile):
         "with_zlib": [True, False],
         "with_openssl": [True, False]}
     default_options = {'shared': False, 'fPIC': True, 'with_zlib': False, 'with_openssl': False}
-    _source_subfolder = "source_subfolder"
-    _build_subfolder = None
     _autotools = None
+
+    @property
+    def _source_subfolder(self):
+        return "source_subfolder"
+
+    @property
+    def _build_subfolder(self):
+        return os.path.join(self.build_folder, "output")
+
 
     def config_options(self):
         if self.settings.os == 'Windows':
@@ -53,7 +60,6 @@ class LibpqConan(ConanFile):
     def _configure_autotools(self):
         if not self._autotools:
             self._autotools = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
-            self._build_subfolder = os.path.join(self.build_folder, "output")
             args = ['--without-readline']
             args.append('--with-zlib' if self.options.with_zlib else '--without-zlib')
             args.append('--with-openssl' if self.options.with_openssl else '--without-openssl')
