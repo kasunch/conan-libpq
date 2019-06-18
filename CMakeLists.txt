@@ -51,7 +51,6 @@ set(pg_port_src
     source_subfolder/src/port/chklocale.c
     source_subfolder/src/port/crypt.c
     source_subfolder/src/port/dirent.c
-    source_subfolder/src/port/dirmod.c
     source_subfolder/src/port/erand48.c
     source_subfolder/src/port/fls.c
     source_subfolder/src/port/fseeko.c
@@ -93,6 +92,7 @@ set(pg_port_src
     source_subfolder/src/port/thread.c
     source_subfolder/src/port/unsetenv.c
     source_subfolder/src/port/win32env.c    
+    source_subfolder/src/port/win32error.c
     source_subfolder/src/port/win32security.c
     source_subfolder/src/port/win32setlocale.c
 )
