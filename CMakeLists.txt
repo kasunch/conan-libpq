@@ -17,7 +17,6 @@ endif()
 
 set(CMAKE_STATIC_LIBRARY_PREFIX)
 set(CMAKE_SHARED_LIBRARY_PREFIX)
-set(CMAKE_DEBUG_POSTFIX "d")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 file(WRITE source_subfolder/src/port/pg_config_paths.h "#define PGBINDIR \"${CONAN_CMAKE_MODULE_PATH}/bin\"\n")
@@ -105,7 +104,7 @@ endif()
 include_directories(source_subfolder/src/include/port/win32 source_subfolder/src/include/port/win32_msvc)
 
 set(pg_backend_src
-    source_subfolder/src/common/base64.c    
+    source_subfolder/src/common/base64.c
     source_subfolder/src/common/config_info.c
     source_subfolder/src/common/controldata_utils.c
     source_subfolder/src/common/fe_memutils.c
@@ -120,7 +119,7 @@ set(pg_backend_src
     source_subfolder/src/common/rmtree.c
     source_subfolder/src/common/saslprep.c
     source_subfolder/src/common/scram-common.c
-    source_subfolder/src/common/sha2.c    
+    source_subfolder/src/common/sha2.c
     source_subfolder/src/common/unicode_norm.c
     source_subfolder/src/common/username.c
     source_subfolder/src/common/wait_error.c
@@ -138,7 +137,7 @@ set(pg_libpq_src
     source_subfolder/src/interfaces/libpq/fe-print.c
     source_subfolder/src/interfaces/libpq/fe-protocol2.c
     source_subfolder/src/interfaces/libpq/fe-protocol3.c
-    source_subfolder/src/interfaces/libpq/fe-secure.c    
+    source_subfolder/src/interfaces/libpq/fe-secure.c
     source_subfolder/src/interfaces/libpq/libpq-events.c
     source_subfolder/src/interfaces/libpq/pqexpbuffer.c
     source_subfolder/src/interfaces/libpq/libpq-dist.rc
