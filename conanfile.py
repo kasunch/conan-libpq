@@ -8,7 +8,7 @@ import os
 
 class LibpqConan(ConanFile):
     name = "libpq"
-    version = "11.3"
+    version = "11.4"
     description = "The library used by all the standard PostgreSQL tools."
     topics = ("conan", "libpq", "postgresql", "database", "db")
     url = "https://github.com/bincrafters/conan-libpq"
@@ -41,11 +41,11 @@ class LibpqConan(ConanFile):
         if self.options.with_zlib:
             self.requires.add("zlib/1.2.11@conan/stable")
         if self.options.with_openssl:
-            self.requires.add("OpenSSL/1.0.2r@conan/stable")
+            self.requires.add("OpenSSL/1.0.2s@conan/stable")
 
     def source(self):
         source_url = "https://ftp.postgresql.org/pub/source"
-        sha256 = "2a9ff3659e327a4369929478200046942710fd6bc25fe56c72d6b01ee8b1974a"
+        sha256 = "2043ab71f2a435a9e77b4419f804525a0b9ec1ef37d19c1c2e4013dc1cae01a7"
         tools.get("{0}/v{1}/postgresql-{2}.tar.gz".format(source_url, self.version, self.version), sha256=sha256)
         extracted_dir = "postgresql-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
