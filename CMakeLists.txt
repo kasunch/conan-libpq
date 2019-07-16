@@ -39,6 +39,10 @@ file(REMOVE
     source_subfolder/src/include/pg_config_os.h
 )
 
+file(APPEND source_subfolder/src/include/pg_config.h.win32 "#define BLCKSZ 8192\n")
+file(APPEND source_subfolder/src/include/pg_config.h.win32 "#define XLOG_BLCKSZ 8192\n")
+
+
 configure_file(source_subfolder/src/include/pg_config.h.win32 include/pg_config.h)
 configure_file(source_subfolder/src/include/pg_config_ext.h.win32 include/pg_config_ext.h)
 configure_file(source_subfolder/src/include/port/win32.h include/pg_config_os.h)
@@ -68,9 +72,10 @@ set(pg_port_src
     source_subfolder/src/port/noblock.c
     source_subfolder/src/port/open.c
     source_subfolder/src/port/path.c
-    source_subfolder/src/port/pg_crc32c_choose.c
+    source_subfolder/src/port/pg_crc32c_armv8_choose.c
     source_subfolder/src/port/pg_crc32c_sb8.c
     source_subfolder/src/port/pg_crc32c_sse42.c
+    source_subfolder/src/port/pg_crc32c_sse42_choose.c
     source_subfolder/src/port/pg_strong_random.c
     source_subfolder/src/port/pgcheckdir.c
     source_subfolder/src/port/pgmkdirp.c
@@ -108,6 +113,7 @@ set(pg_backend_src
     source_subfolder/src/common/config_info.c
     source_subfolder/src/common/controldata_utils.c
     source_subfolder/src/common/fe_memutils.c
+    source_subfolder/src/common/file_perm.c
     source_subfolder/src/common/file_utils.c
     source_subfolder/src/common/ip.c
     source_subfolder/src/common/keywords.c
@@ -138,6 +144,7 @@ set(pg_libpq_src
     source_subfolder/src/interfaces/libpq/fe-protocol2.c
     source_subfolder/src/interfaces/libpq/fe-protocol3.c
     source_subfolder/src/interfaces/libpq/fe-secure.c
+    source_subfolder/src/interfaces/libpq/fe-secure-common.c
     source_subfolder/src/interfaces/libpq/libpq-events.c
     source_subfolder/src/interfaces/libpq/pqexpbuffer.c
     source_subfolder/src/interfaces/libpq/libpq-dist.rc
