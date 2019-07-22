@@ -47,7 +47,8 @@ class LibpqConan(ConanFile):
         if self.options.with_zlib:
             self.requires.add("zlib/1.2.11@conan/stable")
         if self.options.with_openssl:
-            self.requires.add("OpenSSL/1.0.2s@conan/stable")
+            #self.requires.add("OpenSSL/1.0.2s@conan/stable")
+            self.requires.add("OpenSSL/1.1.1c@conan/stable")
 
     def source(self):
         source_url = "https://ftp.postgresql.org/pub/source"
@@ -83,6 +84,8 @@ class LibpqConan(ConanFile):
                 autotools.make()
             with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
                 autotools.make()
+            with tools.chdir(os.path.join(self._source_subfolder, "src", "include")):
+                autotools.make()
 
     def package(self):
         self.copy(pattern="COPYRIGHT", dst="licenses", src=self._source_subfolder)
@@ -94,6 +97,8 @@ class LibpqConan(ConanFile):
             with tools.chdir(os.path.join(self._source_subfolder, "src", "common")):
                 autotools.install()
             with tools.chdir(os.path.join(self._source_subfolder, "src", "interfaces", "libpq")):
+                autotools.install()
+            with tools.chdir(os.path.join(self._source_subfolder, "src", "include")):
                 autotools.install()
             self.copy(pattern="*.h", dst="include", src=os.path.join(self._build_subfolder, "include"))
             self.copy(pattern="*.h", dst=os.path.join("include", "catalog"), src=os.path.join(self._source_subfolder, "src", "include", "catalog"))
