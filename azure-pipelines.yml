@@ -1,8 +1,57 @@
 jobs:
+- job: Linux
+  pool:
+    vmImage: "Ubuntu 16.04"
+  timeoutInMinutes: 120
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.7"
+  - script: |
+      pip install --upgrade pip
+      chmod +x .ci/install.sh
+      ./.ci/install.sh
+      chmod +x .ci/run.sh
+      ./.ci/run.sh
+    env:
+      CONAN_USERNAME: $(CONAN_USERNAME)
+      CONAN_CHANNEL: "stable"
+      CONAN_UPLOAD: $(CONAN_UPLOAD)
+      CONAN_LOGIN_USERNAME: $(CONAN_LOGIN_USERNAME)
+      CONAN_PASSWORD: $(CONAN_PASSWORD)
+  strategy:
+    matrix:
+      GCC 7 x86_64:
+        CONAN_GCC_VERSIONS: 7
+        CONAN_DOCKER_IMAGE: conanio/gcc7
+        CONAN_ARCHS: "x86_64"
+- job: macOS
+  pool:
+    vmImage: "macOS-10.13"
+  timeoutInMinutes: 120
+  steps:
+  - script: |
+      /bin/bash -c "sudo xcode-select -s /Applications/Xcode_$(XCODE_VERSION).app/Contents/Developer"
+      pip install --upgrade pip
+      chmod +x .ci/install.sh
+      ./.ci/install.sh
+      chmod +x .ci/run.sh
+      ./.ci/run.sh
+    env:
+      CONAN_USERNAME: $(CONAN_USERNAME)
+      CONAN_CHANNEL: "stable"
+      CONAN_UPLOAD: $(CONAN_UPLOAD)
+      CONAN_LOGIN_USERNAME: $(CONAN_LOGIN_USERNAME)
+      CONAN_PASSWORD: $(CONAN_PASSWORD)
+  strategy:
+    matrix:
+      CLANG 10.0:
+        CONAN_APPLE_CLANG_VERSIONS: 10.0
+        XCODE_VERSION: 10
 - job: Windows
   pool:
     vmImage: "windows-2019"
-    timeoutInMinutes: 120
+  timeoutInMinutes: 120
   steps:
   - task: UsePythonVersion@0
     inputs:
