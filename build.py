@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from conans import tools
 from cpt.packager import ConanMultiPackager
 
 if __name__ == "__main__":
