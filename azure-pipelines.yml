@@ -17,7 +17,7 @@ jobs:
       python build.py
     env:
       CONAN_USERNAME: $(CONAN_USERNAME)
-      CONAN_CHANNEL: "testing"
+      CONAN_CHANNEL: "stable"
       CONAN_UPLOAD: $(CONAN_UPLOAD)
       CONAN_LOGIN_USERNAME: $(CONAN_LOGIN_USERNAME)
       CONAN_PASSWORD: $(CONAN_PASSWORD)
@@ -25,5 +25,4 @@ jobs:
     matrix:
       MSVC16:
         CONAN_VISUAL_VERSIONS: 16
-        CONAN_BUILD_TYPES: Debug
         CONAN_ARCHS: "x86_64"
