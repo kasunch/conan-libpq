@@ -76,7 +76,17 @@ jobs:
       CONAN_PASSWORD: $(CONAN_PASSWORD)
   strategy:
     matrix:
-      MSVC16:
+      #MSVC16:
+      #  CONAN_VISUAL_VERSIONS: 16
+      #  CONAN_BUILD_TYPES: Release,Debug
+      #  CONAN_ARCHS: "x86_64"
+      MSVC16_RELEASE:
         CONAN_VISUAL_VERSIONS: 16
-        CONAN_BUILD_TYPES: Release,Debug
+        CONAN_BUILD_TYPES: Release
         CONAN_ARCHS: "x86_64"
+        CONAN_VISUAL_RUNTIMES: "MD"
+      MSVC16_DEBUG:
+        CONAN_VISUAL_VERSIONS: 16
+        CONAN_BUILD_TYPES: Debug
+        CONAN_ARCHS: "x86_64"
+        CONAN_VISUAL_RUNTIMES: "MDd"
