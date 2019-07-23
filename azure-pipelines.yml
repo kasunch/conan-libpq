@@ -26,6 +26,8 @@ jobs:
         CONAN_DOCKER_IMAGE: conanio/gcc7
         CONAN_ARCHS: "x86_64"
 - job: macOS
+  dependsOn: Linux # This job runs after Linux job is done
+  condition: always() # Run regardless of Linux job 
   pool:
     vmImage: "macOS-10.13"
   timeoutInMinutes: 120
@@ -49,6 +51,8 @@ jobs:
         CONAN_APPLE_CLANG_VERSIONS: 10.0
         XCODE_VERSION: 10
 - job: Windows
+  dependsOn: macOS # This job runs after macOS job is done
+  condition: always() # Run regardless of macOS job 
   pool:
     vmImage: "windows-2019"
   timeoutInMinutes: 120
